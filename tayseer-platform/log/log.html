@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>تسجيل الدخول / إنشاء حساب</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #2C5364, #203A43, #0F2027);
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: #1a202c;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .top-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo img {
+      width: 160px;
+      height: auto;
+    }
+
+    .nav-links a {
+      margin: 0 8px;
+      color: #90cdf4;
+      text-decoration: none;
+    }
+
+    .header-icons i {
+      margin-right: 10px;
+      cursor: pointer;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      color: #f7fafc;
+    }
+
+    p {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input {
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 8px;
+    }
+
+    button {
+      padding: 0.75rem;
+      background-color: #3182ce;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-bottom: 0.5rem;
+    }
+
+    button:hover {
+      background-color: #2b6cb0;
+    }
+
+    .toggle-link {
+      color: #90cdf4;
+      text-align: center;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+
+    .social-login {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .google-btn, .apple-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: #2D3748;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.3s ease;
+    }
+
+    .google-btn:hover, .apple-btn:hover {
+      background-color: #1A202C;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #type-selection {
+  text-align: center;
+  margin-top: 50px;
+}
+
+#type-selection button {
+  width: 60%;
+  margin: 10px auto;
+  display: block;
+}
+
+#welcome-screen {
+  text-align: center;
+  margin-top: 50px;
+}
+
+#welcome-screen button {
+  width: 60%;
+  margin: 10px auto;
+  display: block;
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- شريط التنقل -->
+    <nav class="top-nav">
+      <div class="logo">
+        <img src="tayseer.png" alt="شعار تيسير">
+      </div>
+      <div class="nav-links">
+        <a href="http://127.0.0.1:5500/hom/main.html" id="home-link">العوده لصفحة الرئيسية</a>
+      </div>
+      <div class="header-icons">
+        <i class="fas fa-palette" title="تغيير الثيم"></i>
+        <i class="fas fa-globe" title="تغيير اللغة" onclick="toggleLanguage()"></i>
+      </div>
+    </nav>
+
+    <!-- شاشة اختيار نوع الدخول -->
+    <div id="type-selection">
+      <h2 id="login-type">اختر نوع الدخول</h2>
+      <button onclick="selectUserType('admin')" id="admin-btn">تسجيل دخول إداري</button>
+      <button onclick="selectUserType('user')" id="user-btn">تسجيل دخول مستخدم</button>
+    </div>
+
+    <!-- شاشة الترحيب -->
+    <div id="welcome-screen" class="hidden">
+      <h2 id="welcome-title">النظام الإداري لمنصة تيسير</h2>
+      <p id="welcome-desc">مرحبًا بكم في البوابة الرسمية لإدارة خدماتنا. الرجاء اختيار العملية المطلوبة للمتابعة.</p>
+      <button onclick="showLogin()" id="login-btn">تسجيل الدخول</button>
+      <button onclick="showSignup()" id="signup-btn">إنشاء حساب جديد</button>
+    </div>
+
+    <!-- نموذج تسجيل الدخول -->
+    <div id="login-form" class="hidden">
+      <h2 id="login-form-title">تسجيل الدخول</h2>
+      <form action="login.php" method="POST">
+        <input type="tel" name="phone" placeholder="رقم الجوال" required>
+        <input type="password" name="password" placeholder="كلمة المرور" required>
+        <button type="submit">الدخول</button>
+      </form>
+      
+      
+      <div class="social-login">
+        <button class="google-btn"><i class="fab fa-google"></i> Google</button>
+        <button class="apple-btn"><i class="fab fa-apple"></i> Apple</button>
+      </div>
+      <div class="toggle-link" onclick="showSignup()" id="switch-to-signup">ليس لديك حساب؟ أنشئ واحدًا</div>
+      <div class="toggle-link" onclick="showWelcome()" id="back-to-welcome">← رجوع</div>
+    </div>
+
+    <!-- نموذج إنشاء حساب -->
+    <div id="signup-form" class="hidden">
+      <h2 id="signup-form-title">إنشاء حساب جديد</h2>
+      <form action="signup.php" method="POST">
+        <input type="text" name="fullname" placeholder="الاسم الكامل" required>
+        <input type="tel" name="phone" placeholder="رقم الجوال" required>
+        <input type="password" name="password" placeholder="كلمة المرور" required>
+        <input type="hidden" name="type" value="user"> <!-- أو admin -->
+        <button type="submit">التسجيل</button>
+      </form>
+      
+      
+      <div class="social-login">
+        <button class="google-btn"><i class="fab fa-google"></i> Google</button>
+        <button class="apple-btn"><i class="fab fa-apple"></i> Apple</button>
+      </div>
+      <div class="toggle-link" onclick="showLogin()" id="switch-to-login">لديك حساب؟ سجل الدخول</div>
+      <div class="toggle-link" onclick="showWelcome()" id="back-to-welcome-signup">← رجوع</div>
+    </div>
+
+  </div>
+
+  <script>
+    const typeSelection = document.getElementById('type-selection');
+    const welcome = document.getElementById('welcome-screen');
+    const login = document.getElementById('login-form');
+    const signup = document.getElementById('signup-form');
+    
+    const languageData = {
+      arabic: {
+        home: 'الرئيسية',
+        services: 'الخدمات',
+        about: 'عنّا',
+        contact: 'اتصل بنا',
+        loginType: 'اختر نوع الدخول',
+        adminLogin: 'تسجيل دخول إداري',
+        userLogin: 'تسجيل دخول مستخدم',
+        welcomeTitle: 'النظام الإداري لمنصة تيسير',
+        welcomeDesc: 'مرحبًا بكم في البوابة الرسمية لإدارة خدماتنا. الرجاء اختيار العملية المطلوبة للمتابعة.',
+        loginBtn: 'تسجيل الدخول',
+        signupBtn: 'إنشاء حساب جديد',
+        loginFormTitle: 'تسجيل الدخول',
+        submitLogin: 'الدخول',
+        switchToSignup: 'ليس لديك حساب؟ أنشئ واحدًا',
+        backToWelcome: '← رجوع',
+        signupFormTitle: 'إنشاء حساب جديد',
+        signupSubmit: 'التسجيل',
+        switchToLogin: 'لديك حساب؟ سجل الدخول',
+        backToWelcomeSignup: '← رجوع'
+      },
+      english: {
+        home: 'Home',
+        services: 'Services',
+        about: 'About',
+        contact: 'Contact Us',
+        loginType: 'Select Login Type',
+        adminLogin: 'Admin Login',
+        userLogin: 'User Login',
+        welcomeTitle: 'Admin System - Taisir Platform',
+        welcomeDesc: 'Welcome to the official gateway to manage our services. Please choose the required action to proceed.',
+        loginBtn: 'Login',
+        signupBtn: 'Create New Account',
+        loginFormTitle: 'Login',
+        submitLogin: 'Login',
+        switchToSignup: 'Don\'t have an account? Create one',
+        backToWelcome: '← Back',
+        signupFormTitle: 'Create New Account',
+        signupSubmit: 'Sign Up',
+        switchToLogin: 'Have an account? Login',
+        backToWelcomeSignup: '← Back'
+      }
+    };
+
+    let currentLanguage = 'arabic';
+
+    function toggleLanguage() {
+      currentLanguage = (currentLanguage === 'arabic') ? 'english' : 'arabic';
+      updateLanguage();
+    }
+
+    function updateLanguage() {
+      const lang = languageData[currentLanguage];
+
+      document.getElementById('home-link').textContent = lang.home;
+      document.getElementById('services-link').textContent = lang.services;
+      document.getElementById('about-link').textContent = lang.about;
+      document.getElementById('contact-link').textContent = lang.contact;
+      document.getElementById('login-type').textContent = lang.loginType;
+      document.getElementById('admin-btn').textContent = lang.adminLogin;
+      document.getElementById('user-btn').textContent = lang.userLogin;
+      document.getElementById('welcome-title').textContent = lang.welcomeTitle;
+      document.getElementById('welcome-desc').textContent = lang.welcomeDesc;
+      document.getElementById('login-btn').textContent = lang.loginBtn;
+      document.getElementById('signup-btn').textContent = lang.signupBtn;
+      document.getElementById('login-form-title').textContent = lang.loginFormTitle;
+      document.getElementById('login-submit-btn').textContent = lang.submitLogin;
+      document.getElementById('switch-to-signup').textContent = lang.switchToSignup;
+      document.getElementById('back-to-welcome').textContent = lang.backToWelcome;
+      document.getElementById('signup-form-title').textContent = lang.signupFormTitle;
+      document.getElementById('signup-submit-btn').textContent = lang.signupSubmit;
+      document.getElementById('switch-to-login').textContent = lang.switchToLogin;
+      document.getElementById('back-to-welcome-signup').textContent = lang.backToWelcomeSignup;
+    }
+
+    function selectUserType(type) {
+      typeSelection.classList.add('hidden');
+      welcome.classList.remove('hidden');
+
+      const title = welcome.querySelector('h2');
+      const desc = welcome.querySelector('p');
+
+      if (type === 'admin') {
+        title.textContent = currentLanguage === 'arabic' ? "النظام الإداري لمنصة تيسير" : "Admin System - Taisir Platform";
+        desc.textContent = currentLanguage === 'arabic' ? "مرحبًا بكم في البوابة الرسمية لإدارة خدماتنا." : "Welcome to the official gateway to manage our services.";
+      } else {
+        title.textContent = currentLanguage === 'arabic' ? "منصة تيسير - المستخدم" : "Taisir Platform - User";
+        desc.textContent = currentLanguage === 'arabic' ? "مرحبًا بك! الرجاء تسجيل الدخول أو إنشاء حساب جديد." : "Welcome! Please login or create a new account.";
+      }
+    }
+
+    function showLogin() {
+      welcome.classList.add('hidden');
+      signup.classList.add('hidden');
+      login.classList.remove('hidden');
+    }
+
+    function showSignup() {
+      welcome.classList.add('hidden');
+      login.classList.add('hidden');
+      signup.classList.remove('hidden');
+    }
+
+    function showWelcome() {
+      login.classList.add('hidden');
+      signup.classList.add('hidden');
+      welcome.classList.remove('hidden');
+    }
+  </script>
+
+</body>
+</html>

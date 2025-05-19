@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- إعدادات تسجيل الدخول باستخدام Apple -->
+    <meta name="appleid-signin-client-id" content="[CLIENT_ID]">
+    <meta name="appleid-signin-scope" content="name email">
+    <meta name="appleid-signin-redirect-uri" content="[REDIRECT_URI]">
+    <meta name="appleid-signin-state" content="[STATE]">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup</title>
+    <link rel="stylesheet" href="hom.css">
+</head>
+<body>
+    <header>
+        <img src="ma3n.png" alt="Project Logo">
+        <h1></h1>
+    </header>
+
+    <div class="container">
+        <div class="welcome-screen" id="welcome-screen">
+            <h2>Welcome</h2>
+            <p>Enter your personal details to access your account</p>
+            <button class="btn primary" onclick="showLogin()">Sign in</button>
+            <button class="btn secondary" onclick="showSignup()">Sign up</button>
+        </div>
+        <div class="form-container" id="signup-form">
+            <button class="back-btn" onclick="showWelcome()">&#8592; Back</button>
+            <h2>Create Account</h2>
+            <input type="text" placeholder="Full Name">
+            <input type="tel" placeholder="Phone Number" pattern="[0-9]{10}" required>
+            <input type="password" placeholder="Password">
+            <button class="btn primary">Sign up</button>
+            <p>Or sign up with:</p>
+            <div class="social-login">
+                <button class="google">Google</button>
+                <button class="apple" onclick="appleSignIn()">Apple</button>
+            </div>
+            <p>Already have an account? <a href="#" onclick="showLogin()">Sign in</a></p>
+        </div>
+
+        <div class="form-container" id="login-form">
+            <button class="back-btn" onclick="showWelcome()">&#8592; Back</button>
+            <h2>Sign In</h2>
+            <input type="tel" placeholder="Phone Number" pattern="[0-9]{10}" required>
+            <input type="password" placeholder="Password">
+            <button class="btn primary">Sign in</button>
+            <p>Or sign in with:</p>
+            <div class="social-login">
+                <button class="google">Google</button>
+                <button class="apple" onclick="appleSignIn()">Apple</button>
+            </div>
+            <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+        </div>
+    </div>
+
+    <!-- مكتبة Apple Sign-In -->
+    <script type="text/javascript" src="https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js"></script>
+    <script src="hom.js"></script>
+
+</body>
+</html>
+
+
+
+
+------------------------------------------------------------------------------------
+css
+
+/* Reset & Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(to right, #5C4033, #F5DEB3); /* تدرج أبيض وبيج */
+    color: black;
+}
+
+/* Header Style */
+header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to right, #5C4033, #F5DEB3); /* تدرج أبيض وبيج */
+    padding: 25px 0;
+    color: white;
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+header img {
+    width: 150px;
+    height: 150px;
+    margin-right: 10px;
+}
+
+.container {
+    width: 500px;
+    text-align: center;
+    background: #FAFAFA;
+    padding: 60px;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+    margin-top: 180px;
+    color: #2C2C2C;
+}
+
+.welcome-screen, .form-container {
+    display: none;
+    background: white;
+    color: black;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.welcome-screen {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+}
+
+input, button {
+    width: 100%;
+    padding: 14px;
+    margin: 12px 0;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+}
+
+.btn.primary {
+    background: #4A4A4A;
+    color: white;
+    font-weight: bold;
+}
+
+.btn.secondary {
+    background: #7E7E7E;
+    color: white;
+    font-weight: bold;
+}
+
+.btn.primary:hover, .btn.secondary:hover {
+    opacity: 0.8;
+}
+
+.social-login {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+}
+
+.social-login button {
+    background: #000;
+    color: white;
+    padding: 14px 22px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+}
+
+button {
+    font: inherit;
+    font-size: 1.3rem;
+    cursor: pointer;
+    border: 0;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+button:hover {
+    background: #2C2C2C;
+    color: white;
+}
+
+
+
+--------------------------------------------------------------------------
+js
+
+function showSignup() {
+    toggleForms('signup-form');
+}
+function showLogin() {
+    toggleForms('login-form');
+}
+function showWelcome() {
+    toggleForms('welcome-screen');
+}
+function toggleForms(id) {
+    document.querySelectorAll('.form-container, .welcome-screen').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            el.style.display = 'none';
+        }, 300);
+    });
+
+    setTimeout(() => {
+        let activeForm = document.getElementById(id);
+        activeForm.style.display = 'block';
+        setTimeout(() => {
+            activeForm.style.opacity = '1';
+            activeForm.style.transform = 'scale(1)';
+        }, 50);
+    }, 300);
+}
+
+ function appleSignIn() {
+            AppleID.auth.signIn().then(response => {
+                console.log("Apple Sign-In Success:", response);
+                // هنا يمكن معالجة بيانات المستخدم بعد تسجيل الدخول
+            }).catch(error => {
+                console.error("Apple Sign-In Error:", error);
+            });
+        }
+
+
+        --------------------------------------------------------------------------------------
+
+        الكود بعد التعديل 
+
+        <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+ <!-- إعدادات تسجيل الدخول باستخدام Apple -->
+ <meta name="appleid-signin-client-id" content="[CLIENT_ID]">
+ <meta name="appleid-signin-scope" content="name email">
+ <meta name="appleid-signin-redirect-uri" content="[REDIRECT_URI]">
+ <meta name="appleid-signin-state" content="[STATE]">
+
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول - منصة معا الرسمية</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-blue: #2B6A78;
+      /* تم تخفيض درجة اللون الثانوي ليصبح أخف وأقل غموضاً */
+      --secondary-teal: #3F6D8B;
+      --light-cream: #F7F4EF;
+      --dark-text: #2D3748;
+      --card-shadow: rgba(0, 0, 0, 0.1);
+    }
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: var(--light-cream);
+      color: var(--dark-text);
+      margin: 0;
+      padding-top: 70px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    /* شريط التنقل العلوي (بدون تغيير) */
+    .top-nav {
+      background: #ede6db;
+      padding: 1rem 2rem;
+      box-shadow: 0 4px 20px var(--card-shadow);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      height: 60px;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .logo {
+      order: 3;
+    }
+    .logo img {
+      height: 40px;
+      margin-top: 0;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      order: 2;
+      margin-right: 2rem;
+    }
+    .nav-links a {
+      color: #244069;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+    }
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .header-icons {
+      display: flex;
+      gap: 1.2rem;
+      color: #244069;
+      order: 1;
+      margin-left: auto;
+    }
+    /* أنماط صفحة المصادقة */
+    .auth-container {
+      max-width: 400px;
+      margin: 6rem auto; /* مسافة أكبر بين المحتوى والهيدر */
+      padding: 2rem;
+      /* استخدمنا تدريجاً خفيفاً بدلاً من اللون الواحد */
+      background: linear-gradient(135deg, #ffffff, #f0f4f8);
+      border-radius: 20px;
+      box-shadow: 0 6px 30px var(--card-shadow);
+    }
+    /* شاشة الترحيب الرسمية بتصميم أكثر نعومة */
+    .welcome-screen {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: linear-gradient(135deg, #ffffff, #f8fbff);
+      border-radius: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .welcome-screen h2 {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      color: var(--secondary-teal);
+    }
+    .welcome-screen p {
+      font-size: 1rem;
+      color: #555;
+      margin-bottom: 1rem;
+    }
+    .auth-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .auth-form input {
+      width: 100%;
+      padding: 12px 20px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+    .auth-btn {
+      background: var(--primary-blue);
+      color: #fff;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .auth-btn:hover {
+      background: var(--secondary-teal);
+    }
+    .toggle-form {
+      text-align: center;
+      margin-top: 1rem;
+    }
+    .toggle-form a {
+      color: var(--primary-blue);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    .form-container {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- الهيدر (بدون تغيير) -->
+  <nav class="top-nav">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="../photo_5908735205626202398_y-removebg-preview.png" alt="شعار تيسير">
+      </div>
+      <div class="nav-links">
+        <a href="index.html">الرئيسية</a>
+        <a href="#services">الخدمات</a>
+        <a href="#about">عنّا</a>
+        <a href="#contact">اتصل بنا</a>
+      </div>
+      <div class="header-icons">
+        <i class="fas fa-user" title="الحساب"></i>
+        <i class="fas fa-palette" title="تغيير الثيم"></i>
+        <i class="fas fa-globe" title="تغيير اللغة"></i>
+      </div>
+    </div>
+  </nav>
+  <!-- محتوى صفحة المصادقة -->
+  <div class="auth-container">
+    <!-- شاشة الترحيب الرسمية -->
+    <div class="welcome-screen">
+      <h2>النظام الإداري لمنصة معا</h2>
+      <p>مرحبًا بكم في البوابة الرسمية لإدارة خدماتنا. الرجاء اختيار العملية المطلوبة للمتابعة.</p>
+      <div class="auth-form">
+        <button class="auth-btn" onclick="showLogin()">تسجيل الدخول</button>
+        <button class="auth-btn" onclick="showSignup()">إنشاء حساب جديد</button>
+      </div>
+    </div>
+    <div class="form-container" id="login-form" style="display: none;">
+      <button class="auth-btn" onclick="showWelcome()">← رجوع</button>
+      <h3>تسجيل الدخول</h3>
+      <form class="auth-form">
+        <input type="tel" placeholder="رقم الجوال" required>
+        <input type="password" placeholder="كلمة المرور" required>
+        <button class="auth-btn" type="submit">الدخول</button>
+      </form>
+      <div class="toggle-form">
+        <a href="#" onclick="showSignup()">ليس لديك حساب؟ سجل الآن</a>
+      </div>
+    </div>
+    <div class="form-container" id="signup-form" style="display: none;">
+      <button class="auth-btn" onclick="showWelcome()">← رجوع</button>
+      <h3>إنشاء حساب جديد</h3>
+      <form class="auth-form">
+        <input type="text" placeholder="الاسم الكامل" required>
+        <input type="tel" placeholder="رقم الجوال" required>
+        <input type="password" placeholder="كلمة المرور" required>
+        <button class="auth-btn" type="submit">التسجيل</button>
+      </form>
+      <div class="toggle-form">
+        <a href="#" onclick="showLogin()">لديك حساب بالفعل؟ سجل الدخول</a>
+      </div>
+    </div>
+  </div>
+  <script>
+    function showLogin() {
+      document.querySelector('.welcome-screen').style.display = 'none';
+      document.getElementById('signup-form').style.display = 'none';
+      document.getElementById('login-form').style.display = 'block';
+    }
+    function showSignup() {
+      document.querySelector('.welcome-screen').style.display = 'none';
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('signup-form').style.display = 'block';
+    }
+    function showWelcome() {
+      document.querySelector('.welcome-screen').style.display = 'block';
+      document.getElementById('login-form').style.display = 'none';
+      document.getElementById('signup-form').style.display = 'none';
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
